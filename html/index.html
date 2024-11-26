@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+    <h1>성별과 나이대 선택</h1>
+
+    <!-- 성별 선택 -->
+    <div class="section">
+        <h2>성별</h2>
+        <div class="radio-group">
+            <label>
+                <input type="radio" name="gender" value="남">
+                남성
+            </label>
+            <label>
+                <input type="radio" name="gender" value="여">
+                여성
+            </label>
+        </div>
+    </div>
+
+    <!-- 나이대 선택 -->
+    <div class="section">
+        <h2>나이대</h2>
+        <div class="radio-group">
+            <label>
+                <input type="radio" name="ageGroup" value="10대">
+                10대
+            </label>
+            <label>
+                <input type="radio" name="ageGroup" value="20대">
+                20대
+            </label>
+            <label>
+                <input type="radio" name="ageGroup" value="30대">
+                30대
+            </label>
+            <label>
+                <input type="radio" name="ageGroup" value="40대">
+                40대
+            </label>
+        </div>
+    </div>
+
+    <!-- mainCategory 선택 -->
+    <div class="section">
+        <h2>mainCategory</h2>
+        <div class="radio-group">
+            <label>
+                <input type="radio" name="mainCategory" value="배송">
+                배송
+            </label>
+        </div>
+    </div>
+
+    <!-- level 선택 -->
+    <div class="section">
+        <h2>level</h2>
+        <div class="radio-group">
+            <label>
+                <input type="radio" name="level" value="초급">
+                초급
+            </label>
+            <label>
+                <input type="radio" name="level" value="고급">
+                고급
+            </label>
+        </div>
+    </div>
+
+    <button type="button" onclick="submitSelection()">선택 제출</button>
+
+    <h1>API에서 받은 JSON 데이터</h1>
+    <ul id="userList"></ul>
+
+</body>
+
+</html>
+
+<script>
+    const apiUrl = new URL("http://127.0.0.1:14050/search/customer");
+    async function fetchData(gender, age) {
+        try {
+            // 쿼리 파라미터 추가 (한글 데이터 인코딩)
+            const queryParams = new URLSearchParams({
+                gender: gender,
+                ageGroup: age,
+            }).toString();
+
+            const url = `${apiUrl}?${queryParams}`;
+
+            // GET 요청 보내기
+            const response = await fetch(url);
+
+            // 응답 처리
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log("Response Data:", data);
+            return data; // 필요한 경우 반환
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    }
+
+    function submitSelection() {
+        const gender = document.querySelector('input[name="gender"]:checked')?.value;
+        const ageGroup = document.querySelector('input[name="ageGroup"]:checked')?.value;
+
+        if (gender && ageGroup) {
+            // alert(`선택한 성별: ${gender}, 선택한 나이대: ${ageGroup}`);
+            fetchData("남", "30대")
+        } else {
+            alert("성별과 나이대를 모두 선택해 주세요!");
+        }
+    }
+
+    function renderData(users) {
+        const container = document.getElementById("userList");
+        container.innerHTML = ""; // 기존 내용 초기화
+
+        users.forEach(user => {
+            const listItem = document.createElement("li");
+            listItem.textContent = `${user.name} - ${user.email}`;
+            container.appendChild(listItem);
+        });
+    }
+
+</script>
