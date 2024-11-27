@@ -1,5 +1,6 @@
 
-const apiUrl = new URL("http://company.i-bricks.co.kr:11385/search");
+const apiUrl = new URL("http://127.0.0.1:14050/search");
+// const apiUrl = new URL("http://company.i-bricks.co.kr:11385/search");
 
 function submitSelection() {
     const gender = document.querySelector('input[name="gender"]:checked')?.value;
@@ -46,7 +47,7 @@ async function fetchData(gender, age, mainCategory, level) {
         console.log("data[0] :", data[0].customerInfo);
         
         updateCustomerInfo(data[0].customerInfo);
-        startPopup(data[0].popup);
+        startPopup(data[0]);
 
         return data; // 필요한 경우 반환
     } catch (error) {
@@ -66,7 +67,7 @@ function updateCustomerInfo(customerInfo){
 }
 
 function startPopup(item){
-    const isConfirmed = confirm(item.content);
+    const isConfirmed = confirm(item);
     if (isConfirmed) {
         alert("작업을 진행합니다.");
     } else {
